@@ -61,7 +61,7 @@ public class Main {
                 System.out.printf("제목   |   %s\n", foundArticle.title);
                 System.out.printf("내용   |   %s\n", foundArticle.body);
             }else {
-                System.out.println("존재하지 않는 명령어 입나다!!!!!");
+                System.out.println("존재하지 않는 명령어 입나다!!!!!asdasdas");
             }
 
         }
