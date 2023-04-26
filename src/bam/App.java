@@ -1,23 +1,23 @@
-package Basic_Articile_Manager;
+package bam;
 
-import java.text.SimpleDateFormat;
+import Bam_Dto.Article;
+import Bam_Util.Util;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+public class App {
+    private List<Article> articleList;
+    private int articlesId;
 
-public class Main {
-    static List<Article> articleList;
-    static int articlesId;
-
-    static {
+    public App(){
         articleList = new ArrayList<>();
         articlesId = 0;
     }
 
-    public static void main(String[] args) {
+    public void run() {
         System.out.println("== 프로그램 시작 ==");
-        maketestDate();
+        makeTestDate();
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -36,7 +36,7 @@ public class Main {
                 System.out.println("제목  :   ");
                 String body = sc.nextLine();
                 String regDate = Util.getDateStr();
-                Article article = new Article(id, regDate ,title, body);
+                Article article = new Article(id, regDate, title, body);
                 articleList.add(article);
                 System.out.printf("%d 번 글이 생성되었습니다.\n", id);
 
@@ -53,8 +53,8 @@ public class Main {
                     System.out.printf("%d   |   %s  |   %s\n", article.id, article.title, article.regDate);
                 }
             } else if (cmd.startsWith("article detail ")) {
-                String[] cmdBits = cmd.split(" ");
-                int id = Integer.parseInt(cmdBits[2]);
+                String[] cmdBist = cmd.split(" ");
+                int id = Integer.parseInt(cmdBist[2]);
                 Article foundArticle = null;
                 for (Article article : articleList) {
                     if (article.id == id) {
@@ -83,7 +83,6 @@ public class Main {
                         break;
                     }
                 }
-
                 if (foundArticle == null) {
                     System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
                     continue;
@@ -96,6 +95,7 @@ public class Main {
 
                 foundArticle.title = title;
                 foundArticle.body = body;
+                System.out.printf("%s번 게시물이 수정 되었습니다!\n",id);
             } else if (cmd.startsWith("article delete ")) {
                 String[] cmdBist = cmd.split(" ");
                 int id = Integer.parseInt(cmdBist[2]);
@@ -106,7 +106,7 @@ public class Main {
                         break;
                     }
                 }
-                if(foundArticle == null){
+                if (foundArticle == null) {
                     System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
                     continue;
                 }
@@ -121,7 +121,7 @@ public class Main {
         System.out.println("=== 프로그램 끝 ===");
     }
 
-    private static void maketestDate() {
+    private void makeTestDate() {
         System.out.println("테스트용 게시물 데이터 5 개 새성");
         for (int i = 1; i <= 5; i++) {
             int id = articlesId + 1;
@@ -131,26 +131,5 @@ public class Main {
             Article article = new Article(id, Util.getDateStr(), title, body);
             articleList.add(article);
         }
-    }
-}
-
-class Article {
-    int id;
-    String title;
-    String body;
-    String regDate;
-
-//    public Article(int id, String dateStr, String title, String body) {
-//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy년 MM월 dd날 HH시 mm분 ss초");
-//        Date now = new Date();
-//        regDate = formatter.format(now);
-//    }
-
-    public Article(int id, String regDate, String title, String body) {
-//        this(id, Util.getDateStr(), title, body);
-        this.regDate = regDate;
-        this.id = id;
-        this.title = title;
-        this.body = body;
     }
 }

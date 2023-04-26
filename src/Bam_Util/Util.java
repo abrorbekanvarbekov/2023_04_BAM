@@ -1,12 +1,12 @@
-package Basic_Articile_Manager;
+package Bam_Util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Util {
     public static String getDateStr(){
-        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date now = new Date();
-        return formater.format(now);
+        return formatter.format(now);
     }
 }
