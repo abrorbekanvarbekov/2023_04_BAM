@@ -6,11 +6,12 @@ import Bam_Util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 public class App {
     private List<Article> articleList;
     private int articlesId;
 
-    public App(){
+    public App() {
         articleList = new ArrayList<>();
         articlesId = 0;
     }
@@ -40,16 +41,31 @@ public class App {
                 articleList.add(article);
                 System.out.printf("%d 번 글이 생성되었습니다.\n", id);
 
-            } else if (cmd.equals("article list")) {
+            } else if (cmd.startsWith("article list")) {
                 if (articleList.size() == 0) {
                     System.out.println("존재하는 개시물이 없습니다!");
                     continue;
                 }
+                List<Article> printArticles = articleList;
+                String searchKeyword = cmd.substring("article list".length()).trim();
 
+                if (searchKeyword.length() > 0){
+                    System.out.println("검색어    : " + searchKeyword);
+                    printArticles = new ArrayList<>();
+                    for (Article article : articleList){
+                        if (article.title.contains(searchKeyword)){
+                            printArticles.add(article);
+                        }
+                    }
+                    if (printArticles.size() == 0){
+                        System.out.println("검색 결과가 없습니다.");
+                        continue;
+                    }
+                }
                 System.out.println("=== 게시물 목록 ===");
                 System.out.println("번호  |   제목  |   작성일   ");
-                for (int i = articleList.size() - 1; i >= 0; i--) {
-                    Article article = articleList.get(i);
+                for (int i = printArticles.size() - 1; i >= 0; i--) {
+                    Article article = printArticles.get(i);
                     System.out.printf("%d   |   %s  |   %s\n", article.id, article.title, article.regDate);
                 }
             } else if (cmd.startsWith("article detail ")) {
@@ -82,7 +98,7 @@ public class App {
 
                 foundArticle.title = title;
                 foundArticle.body = body;
-                System.out.printf("%s번 게시물이 수정 되었습니다!\n",id);
+                System.out.printf("%s번 게시물이 수정 되었습니다!\n", id);
 
             } else if (cmd.startsWith("article delete ")) {
                 String[] cmdBist = cmd.split(" ");
@@ -93,8 +109,8 @@ public class App {
                     continue;
                 }
                 articleList.remove(foundArticle);
-                System.out.printf("%s번 게시뮬은 삭제 되었습니다!", id);
-            } else {
+                System.out.printf("%s번 게시뮬은 삭제 되었습니다!\n", id);
+            }else {
                 System.out.println("존재하지 않는 명령어 입니다!!");
             }
 
@@ -115,7 +131,7 @@ public class App {
         }
     }
 
-    private Article getArticleById(int id){
+    private Article getArticleById(int id) {
         for (Article article : articleList) {
             if (article.id == id) {
                 return article;
