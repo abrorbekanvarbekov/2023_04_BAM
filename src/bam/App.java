@@ -2,6 +2,7 @@ package bam;
 
 import Bam_Dto.Article;
 import Bam_Util.Util;
+import bam_User.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +11,14 @@ import java.util.Scanner;
 public class App {
     private List<Article> articleList;
     private int articlesId;
+    private int lastUserId;
+    private List<User> userList;
 
     public App() {
         articleList = new ArrayList<>();
         articlesId = 0;
+        userList = new ArrayList<>();
+        lastUserId = 0;
     }
 
     public void run() {
@@ -27,7 +32,47 @@ public class App {
             if (cmd.equals("exit")) {
                 break;
             }
-            if (cmd.equals("article write")) {
+            if (cmd.equals("member join")) {
+                System.out.println("=== 회원  가입 ===");
+                int id = lastUserId + 1;
+                lastUserId = id;
+                String userId = null;
+                while (true) {
+                    System.out.println("로그인 아이디  :   ");
+                    userId = sc.nextLine();
+
+                    if (isUserIdDup(userId)){
+                        System.out.printf("%s은 (는) 이미 사용중인 아이디입니다!\n", userId);
+                        continue;
+                    }
+                    System.out.printf("%s은 (는) 사용가능한 아이디입니다!\n", userId);
+                    break;
+                }
+                System.out.println("로그인 비밀번호  :   ");
+                String userPw = sc.nextLine();
+                while (true) {
+                    System.out.println("로그인 비밀번호  확인:   ");
+                    String userCHeckPw = sc.nextLine();
+                    if (userPw.equals(userCHeckPw) == false) {
+                        System.out.println("비밀번호를 확인해주세요!");
+                        continue;
+                    }
+                    break;
+                }
+                System.out.println("이름 :   ");
+                String userName = sc.nextLine();
+                String regDate = Util.getDateStr();
+                User user = new User(id, userId, userPw, userName, regDate);
+                userList.add(user);
+                System.out.printf("%s 회원님이 가입되었습니다. \n", userId);
+
+            } else if (cmd.equals("member list")) {
+                System.out.println("== 회원 목록 ==");
+                for (int i = userList.size() - 1; i >= 0; i--) {
+                    User user = userList.get(i);
+                    System.out.printf("%d   |   %s  |   %s    |    %s\n", user.id, user.userId, user.regDate, user.userName);
+                }
+            } else if (cmd.equals("article write")) {
                 int id = articlesId + 1;
                 articlesId = id;
 
@@ -49,15 +94,15 @@ public class App {
                 List<Article> printArticles = articleList;
                 String searchKeyword = cmd.substring("article list".length()).trim();
 
-                if (searchKeyword.length() > 0){
+                if (searchKeyword.length() > 0) {
                     System.out.println("검색어    : " + searchKeyword);
                     printArticles = new ArrayList<>();
-                    for (Article article : articleList){
-                        if (article.title.contains(searchKeyword)){
+                    for (Article article : articleList) {
+                        if (article.title.contains(searchKeyword)) {
                             printArticles.add(article);
                         }
                     }
-                    if (printArticles.size() == 0){
+                    if (printArticles.size() == 0) {
                         System.out.println("검색 결과가 없습니다.");
                         continue;
                     }
@@ -110,13 +155,21 @@ public class App {
                 }
                 articleList.remove(foundArticle);
                 System.out.printf("%s번 게시뮬은 삭제 되었습니다!\n", id);
-            }else {
+            } else {
                 System.out.println("존재하지 않는 명령어 입니다!!");
             }
 
         }
         sc.close();
         System.out.println("=== 프로그램 끝 ===");
+    }
+    private boolean isUserIdDup(String userId){
+        for (User user : userList) {
+            if (user.userId.equals(userId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void makeTestDate() {
