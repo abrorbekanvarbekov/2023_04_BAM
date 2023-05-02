@@ -49,6 +49,16 @@ public class MemberController {
         System.out.printf("%s 회원님이 가입되었습니다. \n", userId);
 
     }
+    public void doUserList(){
+        System.out.println("== 회원 목록 ==");
+        if (userList.size() == 0) {
+            System.out.println("회원 가입자가 없습니다!");
+        }
+        for (int i = userList.size() - 1; i >= 0; i--) {
+            User user = userList.get(i);
+            System.out.printf("%d   |   %s  |   %s    |    %s\n", user.id, user.userId, user.regDate, user.userName);
+        }
+    }
 
     private boolean isUserIdDup(String userId){
         for (User user : userList) {
