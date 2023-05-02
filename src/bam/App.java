@@ -23,7 +23,9 @@ public class App {
         Scanner sc = new Scanner(System.in);
         MemberController memberController = new MemberController(userList, sc);
         ArticleController articleController = new ArticleController(articleList, sc);
-        articleController.makeTestDate();
+        articleController.makeTestData();
+        memberController.makeTestData();
+
         while (true) {
             System.out.println("명령어)");
             String cmd = sc.nextLine();
