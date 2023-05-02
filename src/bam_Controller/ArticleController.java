@@ -7,15 +7,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class ArticleController {
+public class ArticleController extends Controller{
     private int articlesId = 0;
     private List<Article> articleList;
     private Scanner sc;
+    private String cmd;
+    private int id;
     public ArticleController(List<Article> articleList, Scanner sc){
         this.articleList = articleList;
         this.sc = sc;
     }
-    public void doArticleWrite(){
+
+
+    @Override
+    public void doAction(String cmd, String methodName) {
+        this.cmd = cmd;
+
+        switch (methodName){
+            case "write" :
+                doArticleWrite();
+                break;
+            case "list":
+                showList();
+                break;
+            case "detail":
+                showDetail();
+                break;
+            case "modify":
+                doModify();
+                break;
+            case "delete":
+                doDelete();
+                break;
+            default:
+                System.out.println("명령어를 확인해주세요!");
+                break;
+        }
+    }
+    private void doArticleWrite(){
         int id = articlesId + 1;
         articlesId = id;
 
@@ -29,7 +58,7 @@ public class ArticleController {
         articleList.add(article);
         System.out.printf("%d 번 글이 생성되었습니다.\n", id);
     }
-    public void showList(String cmd){
+    private void showList(){
         if (articleList.size() == 0) {
             System.out.println("존재하는 개시물이 없습니다!");
             return;
@@ -58,9 +87,20 @@ public class ArticleController {
         }
     }
 
-    public void showDetail(String cmd){
+    private void showDetail(){
         String[] cmdBist = cmd.split(" ");
-        int id = Integer.parseInt(cmdBist[2]);
+
+        if (cmdBist.length == 2){
+            System.out.println("명령어를 확인해주세요!");
+            return;
+        }
+        try {
+            id = Integer.parseInt(cmdBist[2]);
+        }catch (Exception e){
+            System.out.println("잘 못된 명령어를 입력하였습니다!!");
+            return;
+        }
+
         Article foundArticle = getArticleById(id);
         if (foundArticle == null) {
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
@@ -73,9 +113,20 @@ public class ArticleController {
         System.out.printf("시간   |   %s\n", foundArticle.regDate);
     }
 
-    public void doModify(String cmd){
+    private void doModify(){
         String[] cmdBist = cmd.split(" ");
-        int id = Integer.parseInt(cmdBist[2]);
+
+        if (cmdBist.length == 2){
+            System.out.println("명령어를 확인해주세요!");
+            return;
+        }
+        try {
+            id = Integer.parseInt(cmdBist[2]);
+        }catch (Exception e){
+            System.out.println("잘 못된 명령어를 입력하였습니다!!");
+            return;
+        }
+
         Article foundArticle = getArticleById(id);
         if (foundArticle == null) {
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
@@ -92,9 +143,21 @@ public class ArticleController {
         System.out.printf("%s번 게시물이 수정 되었습니다!\n", id);
     }
 
-    public void doDelete(String cmd){
+    private void doDelete(){
         String[] cmdBist = cmd.split(" ");
-        int id = Integer.parseInt(cmdBist[2]);
+
+        if (cmdBist.length == 2){
+            System.out.println("명령어를 확인해주세요!");
+            return;
+        }
+
+        try {
+            id = Integer.parseInt(cmdBist[2]);
+        }catch (Exception e){
+            System.out.println("잘 못된 명령어를 입력하였습니다!!");
+            return;
+        }
+
         Article foundArticle = getArticleById(id);
         if (foundArticle == null) {
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
@@ -122,4 +185,6 @@ public class ArticleController {
         }
         return null;
     }
+
+
 }

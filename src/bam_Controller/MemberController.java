@@ -6,7 +6,7 @@ import bam_User.User;
 import java.util.List;
 import java.util.Scanner;
 
-public class MemberController {
+public class MemberController extends Controller {
     private List<User> userList;
     private int lastUserId;
     private Scanner sc;
@@ -14,7 +14,23 @@ public class MemberController {
         this.userList = userList;
         this.sc = sc;
     }
-    public void doJoin(){
+
+    @Override
+    public void doAction(String cmd, String methodName) {
+        switch(methodName){
+            case "join":
+                doJoin();
+                break;
+            case "list":
+                doUserList();
+                break;
+            default:
+                System.out.println("명령어를 확인해주세요!");
+                break;
+        }
+    }
+
+    private void doJoin(){
         System.out.println("=== 회원  가입 ===");
         int id = lastUserId + 1;
         lastUserId = id;
@@ -49,7 +65,7 @@ public class MemberController {
         System.out.printf("%s 회원님이 가입되었습니다. \n", userId);
 
     }
-    public void doUserList(){
+    private void doUserList(){
         System.out.println("== 회원 목록 ==");
         if (userList.size() == 0) {
             System.out.println("회원 가입자가 없습니다!");
@@ -68,4 +84,6 @@ public class MemberController {
         }
         return false;
     }
+
+
 }
