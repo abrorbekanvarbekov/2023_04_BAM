@@ -2,6 +2,7 @@ package bam;
 
 import Bam_Dto.Article;
 import Bam_Util.Util;
+import bam_Controller.MemberController;
 import bam_User.User;
 
 import java.util.ArrayList;
@@ -11,20 +12,19 @@ import java.util.Scanner;
 public class App {
     private List<Article> articleList;
     private int articlesId;
-    private int lastUserId;
     private List<User> userList;
 
     public App() {
         articleList = new ArrayList<>();
         articlesId = 0;
         userList = new ArrayList<>();
-        lastUserId = 0;
     }
 
     public void run() {
         System.out.println("== 프로그램 시작 ==");
         makeTestDate();
         Scanner sc = new Scanner(System.in);
+        MemberController memberController = new MemberController(userList, sc);
 
         while (true) {
             System.out.println("명령어)");
@@ -33,41 +33,12 @@ public class App {
                 break;
             }
             if (cmd.equals("member join")) {
-                System.out.println("=== 회원  가입 ===");
-                int id = lastUserId + 1;
-                lastUserId = id;
-                String userId = null;
-                while (true) {
-                    System.out.println("로그인 아이디  :   ");
-                    userId = sc.nextLine();
-
-                    if (isUserIdDup(userId)){
-                        System.out.printf("%s은 (는) 이미 사용중인 아이디입니다!\n", userId);
-                        continue;
-                    }
-                    System.out.printf("%s은 (는) 사용가능한 아이디입니다!\n", userId);
-                    break;
-                }
-                System.out.println("로그인 비밀번호  :   ");
-                String userPw = sc.nextLine();
-                while (true) {
-                    System.out.println("로그인 비밀번호  확인:   ");
-                    String userCHeckPw = sc.nextLine();
-                    if (userPw.equals(userCHeckPw) == false) {
-                        System.out.println("비밀번호를 확인해주세요!");
-                        continue;
-                    }
-                    break;
-                }
-                System.out.println("이름 :   ");
-                String userName = sc.nextLine();
-                String regDate = Util.getDateStr();
-                User user = new User(id, userId, userPw, userName, regDate);
-                userList.add(user);
-                System.out.printf("%s 회원님이 가입되었습니다. \n", userId);
-
+                memberController.doJoin();
             } else if (cmd.equals("member list")) {
                 System.out.println("== 회원 목록 ==");
+                if (userList.size() == 0) {
+                    System.out.println("회원 가입자가 없습니다!");
+                }
                 for (int i = userList.size() - 1; i >= 0; i--) {
                     User user = userList.get(i);
                     System.out.printf("%d   |   %s  |   %s    |    %s\n", user.id, user.userId, user.regDate, user.userName);
@@ -163,14 +134,7 @@ public class App {
         sc.close();
         System.out.println("=== 프로그램 끝 ===");
     }
-    private boolean isUserIdDup(String userId){
-        for (User user : userList) {
-            if (user.userId.equals(userId)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     private void makeTestDate() {
         System.out.println("테스트용 게시물 데이터 5 개 새성");
