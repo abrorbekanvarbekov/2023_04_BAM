@@ -10,7 +10,7 @@ public class MemberController extends Controller {
     private List<User> userList;
     private int lastUserId;
     private Scanner sc;
-    private User loginedUser;
+
     public MemberController(List<User> userList, Scanner sc) {
         this.userList = userList;
         this.sc = sc;
@@ -109,7 +109,12 @@ public class MemberController extends Controller {
     }
 
     private void doLogOut() {
+        if(loginedUser == null){
+            System.out.println("로그인 상태가 아닙니다!");
+            return;
+        }
         loginedUser = null;
+        System.out.println("로그아웃 되었습니다!");
     }
 
     private void doUserList() {
@@ -142,6 +147,7 @@ public class MemberController extends Controller {
         return null;
     }
 
+    @Override
     public void makeTestData() {
         System.out.println("테스트용 회원 데이터가 3 개 만들어졌습니다.");
 

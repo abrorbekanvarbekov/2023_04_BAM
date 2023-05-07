@@ -45,6 +45,12 @@ public class ArticleController extends Controller{
         }
     }
     private void doArticleWrite(){
+
+        if(loginedUser == null){
+            System.out.println("로그인 후 이용해주세요!");
+            return;
+        }
+
         int id = articlesId + 1;
         articlesId = id;
 
@@ -54,7 +60,7 @@ public class ArticleController extends Controller{
         System.out.println("제목  :   ");
         String body = sc.nextLine();
         String regDate = Util.getDateStr();
-        Article article = new Article(id, regDate, title, body);
+        Article article = new Article(id, regDate,loginedUser.id, title, body);
         articleList.add(article);
         System.out.printf("%d 번 글이 생성되었습니다.\n", id);
     }
@@ -83,7 +89,7 @@ public class ArticleController extends Controller{
         System.out.println("번호  |   제목  |   작성일   ");
         for (int i = printArticles.size() - 1; i >= 0; i--) {
             Article article = printArticles.get(i);
-            System.out.printf("%d   |   %s  |   %s\n", article.id, article.title, article.regDate);
+            System.out.printf("%d   |   %s  |   %s    |    %d\n", article.id, article.title, article.regDate,article.userId );
         }
     }
 
@@ -166,6 +172,8 @@ public class ArticleController extends Controller{
         articleList.remove(foundArticle);
         System.out.printf("%s번 게시뮬은 삭제 되었습니다!\n", id);
     }
+
+    @Override
     public void makeTestData() {
         System.out.println("테스트용 게시물 데이터 5 개 새성");
         for (int i = 1; i <= 5; i++) {
@@ -173,10 +181,11 @@ public class ArticleController extends Controller{
             articlesId = id;
             String title = "제목" + i;
             String body = "내용" + i;
-            Article article = new Article(id, Util.getDateStr(), title, body);
+            Article article = new Article(id, Util.getDateStr(), 2, title, body);
             articleList.add(article);
         }
     }
+
     private Article getArticleById(int id) {
         for (Article article : articleList) {
             if (article.id == id) {
