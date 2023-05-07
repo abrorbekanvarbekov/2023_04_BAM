@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class App {
     private List<Article> articleList;
     private List<User> userList;
+
     public App() {
         articleList = new ArrayList<>();
         userList = new ArrayList<>();
@@ -36,22 +37,41 @@ public class App {
 
             String[] cmdBits = cmd.split(" ");
 
-            if (cmdBits.length == 1){
+            if (cmdBits.length == 1) {
                 System.out.println("명령어를 확인하세요!");
                 continue;
             }
             String controllerName = cmdBits[0];
             String methodName = cmdBits[1];
 
-            if(controllerName.equals("article")){
+            if (controllerName.equals("article")) {
                 controller = articleController;
             } else if (controllerName.equals("member")) {
                 controller = memberController;
-            }else {
+            } else {
                 System.out.println("존재하지 않는 명령어 입니다!!");
                 continue;
             }
 
+            String actionName = controllerName + "/" + methodName;
+            switch (actionName) {
+                case "article/write":
+                case "article/delete":
+                case "article/modify":
+                case "member/logout":
+                    if (Controller.loginedUser == null) {
+                        System.out.println("로그인 상태가 아닙니다!");
+                        continue;
+                    }
+                    break;
+                case "member/join":
+                case "member/login":
+                    if (Controller.loginedUser != null){
+                        System.out.println("로그인 아웃 후 사용해주세요!");
+                        continue;
+                    }
+                    break;
+            }
             controller.doAction(cmd, methodName);
 //
 //            if (cmd.equals("member join")) {

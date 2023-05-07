@@ -40,11 +40,6 @@ public class MemberController extends Controller {
 
 
     private void doJoin() {
-        if (loginedUser != null){
-            System.out.println("로그인 아웃 후 사용해주세요!");
-            return;
-        }
-
         System.out.println("=== 회원  가입 ===");
         int id = lastUserId + 1;
         lastUserId = id;
@@ -81,10 +76,6 @@ public class MemberController extends Controller {
     }
 
     private void doLogin() {
-        if (loginedUser != null){
-            System.out.println("로그인 아웃 후 사용해주세요!");
-            return;
-        }
 
         System.out.println("== 로그인 페이지 ==");
 
@@ -109,10 +100,6 @@ public class MemberController extends Controller {
     }
 
     private void doLogOut() {
-        if(loginedUser == null){
-            System.out.println("로그인 상태가 아닙니다!");
-            return;
-        }
         loginedUser = null;
         System.out.println("로그아웃 되었습니다!");
     }
