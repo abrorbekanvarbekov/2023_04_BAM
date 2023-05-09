@@ -3,9 +3,10 @@ package bam_Controller;
 import Bam_Dto.Article;
 import Bam_Util.Util;
 import bam_Service.ArticleService;
+import bam_Service.UserService;
+import bam_container.Container;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,10 +14,12 @@ public class ArticleController extends Controller{
     private Scanner sc;
     private String cmd;
     private ArticleService articleService;
+    private UserService userService;
     private int id;
     public ArticleController(Scanner sc){
         this.sc = sc;
-        this.articleService = new ArticleService();
+        this.articleService = Container.articleService;
+        this.userService = Container.userService;
     }
 
 
@@ -55,7 +58,7 @@ public class ArticleController extends Controller{
         System.out.println("제목  :   ");
         String body = sc.nextLine();
         String regDate = Util.getDateStr();
-        Article article = new Article(id, regDate, Controller.loginedUser.id, title, body);
+        Article article = new Article(id, regDate,Controller.loginedUser.id, title, body);
         articleService.add(article);
         System.out.printf("%d 번 글이 생성되었습니다.\n", id);
     }
@@ -72,7 +75,10 @@ public class ArticleController extends Controller{
         System.out.println("번호    |  제목  |   작성일   |    작성자");
         for (int i = printArticles.size() - 1; i >= 0; i--) {
             Article article = printArticles.get(i);
-            System.out.printf("%d   |   %s  |   %s    |    %d\n", article.id, article.title, article.regDate,article.userId );
+
+            String writerName = userService.getWriterName(article.userId);
+
+            System.out.printf("%d   |   %s  |   %s    |    %s\n", article.id, article.title, article.regDate,writerName);
         }
     }
 
@@ -94,12 +100,15 @@ public class ArticleController extends Controller{
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
             return;
         }
+
+        String writerName = userService.getWriterName(foundArticle.userId);
+
         System.out.println("=== 게시물 상세보기 ===");
         System.out.printf("번호   |   %d\n", foundArticle.id);
         System.out.printf("제목   |   %s\n", foundArticle.title);
         System.out.printf("내용   |   %s\n", foundArticle.body);
         System.out.printf("시간   |   %s\n", foundArticle.regDate);
-        System.out.printf("작성자   |   %d\n", foundArticle.userId);
+        System.out.printf("작성자   |   %s\n", writerName);
     }
 
     private void doModify(){

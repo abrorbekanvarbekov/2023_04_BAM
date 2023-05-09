@@ -3,9 +3,8 @@ package bam_Controller;
 import Bam_Util.Util;
 import bam_Service.UserService;
 import bam_User.User;
+import bam_container.Container;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class MemberController extends Controller {
@@ -16,7 +15,7 @@ public class MemberController extends Controller {
     public MemberController(Scanner sc) {
         this.sc = sc;
         loginedUser = null;
-        userService = new UserService();
+        userService = Container.userService;
     }
 
     @Override

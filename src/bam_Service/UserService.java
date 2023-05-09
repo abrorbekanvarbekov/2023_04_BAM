@@ -38,4 +38,8 @@ public class UserService {
     public void makeTestData() {
         userDao.makeTestData();
     }
+
+    public String getWriterName(int userId) {
+        return userDao.getWriterName(userId);
+    }
 }

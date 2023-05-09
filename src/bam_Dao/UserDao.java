@@ -63,4 +63,13 @@ public class UserDao {
             userList.add(user);
         }
     }
+
+    public String getWriterName(int userId) {
+        for (User user : userList){
+            if (userId == user.id){
+                return user.userName;
+            }
+        }
+        return null;
+    }
 }
