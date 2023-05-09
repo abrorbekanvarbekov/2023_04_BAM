@@ -1,20 +1,22 @@
 package bam_Controller;
 
 import Bam_Util.Util;
+import bam_Service.UserService;
 import bam_User.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class MemberController extends Controller {
-    private List<User> userList;
-    private int lastUserId;
+
+    private UserService userService;
     private Scanner sc;
 
-    public MemberController(List<User> userList, Scanner sc) {
-        this.userList = userList;
+    public MemberController(Scanner sc) {
         this.sc = sc;
         loginedUser = null;
+        userService = new UserService();
     }
 
     @Override
@@ -41,14 +43,14 @@ public class MemberController extends Controller {
 
     private void doJoin() {
         System.out.println("=== 회원  가입 ===");
-        int id = lastUserId + 1;
-        lastUserId = id;
+        int id = userService.lastUserId();
+
         String userId = null;
         while (true) {
             System.out.println("로그인 아이디  :   ");
             userId = sc.nextLine();
 
-            if (isUserIdDup(userId)) {
+            if (userService.isUserIdDup(userId)) {
                 System.out.printf("%s은 (는) 이미 사용중인 아이디입니다!\n", userId);
                 continue;
             }
@@ -70,7 +72,7 @@ public class MemberController extends Controller {
         String userName = sc.nextLine();
         String regDate = Util.getDateStr();
         User user = new User(id, userId, userPw, userName, regDate);
-        userList.add(user);
+        userService.add(user);
         System.out.printf("%s 회원님이 가입되었습니다. \n", userId);
 
     }
@@ -84,7 +86,7 @@ public class MemberController extends Controller {
         System.out.println("로그인 비밀번호    :");
         String userPw = sc.nextLine();
 
-        User user = isUserPWEq(userId);
+        User user = userService.getUserByLoginId(userId);
         if (user == null) {
             System.out.println("로그인 아이디가 일치하지 않습니다!");
             return;
@@ -106,47 +108,21 @@ public class MemberController extends Controller {
 
     private void doUserList() {
         System.out.println("== 회원 목록 ==");
-        if (userList.size() == 0) {
+        if (userService.userListSize() == 0) {
             System.out.println("회원 가입자가 없습니다!");
         }
-        for (int i = userList.size() - 1; i >= 0; i--) {
-            User user = userList.get(i);
+        for (int i = userService.userListSize() - 1; i >= 0; i--) {
+            User user = userService.getUser(i);
             System.out.printf("%d   |   %s  |   %s    |    %s \n", user.id, user.userId, user.userName, user.regDate);
         }
     }
 
 
-    private boolean isUserIdDup(String userId) {
-        for (User user : userList) {
-            if (user.userId.equals(userId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private User isUserPWEq(String userId) {
-        for (User user : userList) {
-            if (user.userId.equals(userId)) {
-                return user;
-            }
-        }
-        return null;
-    }
 
     @Override
     public void makeTestData() {
         System.out.println("테스트용 회원 데이터가 3 개 만들어졌습니다.");
-
-        for (int i = 1; i <= 3; i++) {
-            int id = lastUserId + 1;
-            lastUserId = id;
-            String userId = "userId" + i;
-            String userPw = "userPw" + i;
-            String name = "사용자" + i;
-            User user = new User(id, userId, userPw, name, Util.getDateStr());
-            userList.add(user);
-        }
+        userService.makeTestData();
     }
 
 }
