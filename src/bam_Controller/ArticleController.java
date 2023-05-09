@@ -2,20 +2,21 @@ package bam_Controller;
 
 import Bam_Dto.Article;
 import Bam_Util.Util;
+import bam_Service.ArticleService;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ArticleController extends Controller{
-    private int articlesId = 0;
-    private List<Article> articleList;
     private Scanner sc;
     private String cmd;
+    private ArticleService articleService;
     private int id;
     public ArticleController(Scanner sc){
-        this.articleList = new ArrayList<>();
         this.sc = sc;
+        this.articleService = new ArticleService(sc);
     }
 
 
@@ -46,9 +47,7 @@ public class ArticleController extends Controller{
         }
     }
     private void doArticleWrite(){
-
-        int id = articlesId + 1;
-        articlesId = id;
+        int id = articleService.setArticleId();
 
         System.out.println("=== 게시물  작성 ===");
         System.out.println("내용  :   ");
@@ -56,31 +55,20 @@ public class ArticleController extends Controller{
         System.out.println("제목  :   ");
         String body = sc.nextLine();
         String regDate = Util.getDateStr();
-        Article article = new Article(id, regDate,loginedUser.id, title, body);
-        articleList.add(article);
+        Article article = new Article(id, regDate, Controller.loginedUser.id, title, body);
+        articleService.add(article);
         System.out.printf("%d 번 글이 생성되었습니다.\n", id);
+//        articleService.doArticleWrite();
     }
     private void showList(){
-        if (articleList.size() == 0) {
+        String searchKeyword = cmd.substring("article list".length()).trim();
+        List<Article> printArticles = articleService.getArticleList(searchKeyword);
+
+        if (printArticles.size() == 0) {
             System.out.println("존재하는 개시물이 없습니다!");
             return;
         }
-        List<Article> printArticles = articleList;
-        String searchKeyword = cmd.substring("article list".length()).trim();
 
-        if (searchKeyword.length() > 0) {
-            System.out.println("검색어    : " + searchKeyword);
-            printArticles = new ArrayList<>();
-            for (Article article : articleList) {
-                if (article.title.contains(searchKeyword)) {
-                    printArticles.add(article);
-                }
-            }
-            if (printArticles.size() == 0) {
-                System.out.println("검색 결과가 없습니다.");
-                return;
-            }
-        }
         System.out.println("=== 게시물 목록 ===");
         System.out.println("번호    |  제목  |   작성일   |    작성자");
         for (int i = printArticles.size() - 1; i >= 0; i--) {
@@ -102,7 +90,7 @@ public class ArticleController extends Controller{
             System.out.println("잘 못된 명령어를 입력하였습니다!!");
             return;
         }
-        Article foundArticle = getArticleById(id);
+        Article foundArticle = articleService.getArticleById(id);
         if (foundArticle == null) {
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
             return;
@@ -116,7 +104,6 @@ public class ArticleController extends Controller{
     }
 
     private void doModify(){
-
         String[] cmdBist = cmd.split(" ");
 
         if (cmdBist.length == 2){
@@ -130,13 +117,13 @@ public class ArticleController extends Controller{
             return;
         }
 
-        Article foundArticle = getArticleById(id);
+        Article foundArticle = articleService.getArticleById(id);
 
         if (foundArticle == null) {
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
             return;
         }
-        if(foundArticle.userId != loginedUser.id){
+        if(foundArticle.userId != Controller.loginedUser.id){
             System.out.println("해당 개시물에 대한 권한이 없습니다.");
             return;
         }
@@ -154,7 +141,6 @@ public class ArticleController extends Controller{
     }
 
     private void doDelete(){
-
         String[] cmdBist = cmd.split(" ");
 
         if (cmdBist.length == 2){
@@ -169,42 +155,26 @@ public class ArticleController extends Controller{
             return;
         }
 
-        Article foundArticle = getArticleById(id);
+        Article foundArticle = articleService.getArticleById(id);
 
         if (foundArticle == null) {
             System.out.printf("%d번 개시물은 존재하지 않습니다!\n", id);
             return;
         }
 
-        if(foundArticle.userId != loginedUser.id){
+        if(foundArticle.userId != Controller.loginedUser.id){
             System.out.println("해당 개시물에 대한 권한이 없습니다.");
             return;
         }
 
-        articleList.remove(foundArticle);
+        articleService.remove(foundArticle);
         System.out.printf("%s번 게시뮬은 삭제 되었습니다!\n", id);
     }
 
     @Override
     public void makeTestData() {
         System.out.println("테스트용 게시물 데이터 5 개 새성");
-        for (int i = 1; i <= 5; i++) {
-            int id = articlesId + 1;
-            articlesId = id;
-            String title = "제목" + i;
-            String body = "내용" + i;
-            Article article = new Article(id, Util.getDateStr(), 2, title, body);
-            articleList.add(article);
-        }
+        articleService.makeTestData();
     }
 
-    private Article getArticleById(int id) {
-        for (Article article : articleList) {
-            if (article.id == id) {
-                return article;
-            }
-        }
-        return null;
-    }
-    
 }
