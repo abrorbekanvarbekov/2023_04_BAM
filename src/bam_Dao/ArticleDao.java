@@ -2,22 +2,18 @@ package bam_Dao;
 
 import Bam_Dto.Article;
 import Bam_Util.Util;
-import bam_Controller.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ArticleDao {
     private int articlesId;
     private List<Article> articleList;
-    private Scanner sc;
     private int id;
 
-    public ArticleDao(Scanner sc){
+    public ArticleDao(){
         this.articleList = new ArrayList<>();
         this.articlesId = 0;
-        this.sc = sc;
     }
 
     public int setArticleId() {

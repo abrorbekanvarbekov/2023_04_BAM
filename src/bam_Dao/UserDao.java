@@ -6,11 +6,11 @@ import bam_User.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemberDao {
+public class UserDao {
     private List<User> userList;
     private int lastUserId;
 
-    public MemberDao(){
+    public UserDao(){
         this.userList = new ArrayList<>();
         this.lastUserId = 0;
     }

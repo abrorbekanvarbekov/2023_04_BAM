@@ -1,41 +1,41 @@
 package bam_Service;
 
-import Bam_Util.Util;
-import bam_Dao.MemberDao;
+import bam_Dao.UserDao;
 import bam_User.User;
+import bam_container.Container;
 
 public class UserService {
-    private MemberDao memberDao;
+    private UserDao userDao;
 
     public UserService(){
-        this.memberDao = new MemberDao();
+        this.userDao = Container.userDao;
     }
 
     public int lastUserId(){
-       return memberDao.setMemberId();
+       return userDao.setMemberId();
     }
 
     public void add(User user) {
-        memberDao.add(user);
+        userDao.add(user);
     }
 
     public boolean isUserIdDup(String userId) {
-        return memberDao.isUserIdDup(userId);
+        return userDao.isUserIdDup(userId);
     }
 
     public User getUserByLoginId(String userId) {
-        return memberDao.getUserByLoginId(userId);
+        return userDao.getUserByLoginId(userId);
     }
 
     public int userListSize() {
-        return memberDao.userListSize();
+        return userDao.userListSize();
     }
 
     public User getUser(int i) {
-      return memberDao.getUser(i);
+      return userDao.getUser(i);
     }
 
     public void makeTestData() {
-        memberDao.makeTestData();
+        userDao.makeTestData();
     }
 }

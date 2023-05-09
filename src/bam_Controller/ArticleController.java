@@ -16,7 +16,7 @@ public class ArticleController extends Controller{
     private int id;
     public ArticleController(Scanner sc){
         this.sc = sc;
-        this.articleService = new ArticleService(sc);
+        this.articleService = new ArticleService();
     }
 
 
@@ -58,7 +58,6 @@ public class ArticleController extends Controller{
         Article article = new Article(id, regDate, Controller.loginedUser.id, title, body);
         articleService.add(article);
         System.out.printf("%d 번 글이 생성되었습니다.\n", id);
-//        articleService.doArticleWrite();
     }
     private void showList(){
         String searchKeyword = cmd.substring("article list".length()).trim();
